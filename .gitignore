@@ -2,3 +2,5 @@ xgoogle.egg-info
 *~
 *.swp
 .idea
+.project
+.pydevproject
