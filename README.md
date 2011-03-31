@@ -217,7 +217,8 @@ Contributors:
 * Juanjo Conti (Google Blog Search class)
 * Steve Steiner (setup.py)
 * azappella (bug fixes)
-* Nikola Milosevic (Google Face image search)
+* Nikola Milosevic (Google Face Image search)
+* Ramon Xuriguera (Google Real-Time search)
 
 License
 =======
