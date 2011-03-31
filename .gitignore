@@ -1,5 +1,7 @@
 xgoogle.egg-info
 *~
 *.swp
+*.pyc
 .project
 .pydevproject
+.settings
