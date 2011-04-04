@@ -168,7 +168,6 @@ class RealtimeSearch(object):
         keywords = []
         for em in ems:
             keywords.append(self._html_unescape(''.join(em.findAll(text=True))))
-        keywords = string.join(keywords,sep=' ') if keywords else None
         return screen_name, status, keywords
 
     def _extract_status_timestamp(self, result):
