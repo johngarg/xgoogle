@@ -12,6 +12,7 @@
 import re
 from datetime import datetime
 import time
+import string
 import urllib
 from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
@@ -29,11 +30,12 @@ class CaptchaError(SearchError):
     pass
 
 class RealtimeResult:
-    def __init__(self, screen_name, status, timestamp, id):
+    def __init__(self, screen_name, status, timestamp, id, keywords=None):
         self.screen_name = screen_name
         self.status = status
         self.timestamp = timestamp
         self.id = id
+        self.keywords = keywords
 
     def __str__(self):
         return 'Realtime Result:\n\t%s\n\t%s\n\t%s' % (self.screen_name, self.status, self.timestamp)
@@ -102,7 +104,7 @@ class RealtimeSearch(object):
 
     def _check_captcha(self, page):
         form = page.find('form', {'action':'Captcha'})
-        return form!=None
+        return form != None
 
     def _maybe_raise(self, cls, *arg):
         if self.debug:
@@ -147,7 +149,7 @@ class RealtimeSearch(object):
 
     def _extract_result(self, result):
         try:
-            screen_name, status = self._extract_status(result)
+            screen_name, status, keywords = self._extract_status(result)
             timestamp = self._extract_status_timestamp(result)
             id = self._extract_status_id(result)
         except ValueError:
@@ -155,35 +157,40 @@ class RealtimeSearch(object):
 
         if not screen_name or not status or not timestamp:
             return None
-        return RealtimeResult(screen_name, status, timestamp, id)
+        return RealtimeResult(screen_name, status, timestamp, id, keywords)
 
     def _extract_status(self, result):
-        div = result.find('div', {'class':None,'style':None})
-        div = div.findAll(text=True)
-        screen_name = self._html_unescape(div.pop(0))
-        status = self._html_unescape(''.join(div))
-        return screen_name, status
+        div = result.find('div', {'class':None, 'style':None})
+        div_text = div.findAll(text=True)
+        screen_name = self._html_unescape(div_text.pop(0))
+        status = self._html_unescape(''.join(div_text))
+        ems = div.findAll('em')
+        keywords = []
+        for em in ems:
+            keywords.append(self._html_unescape(''.join(em.findAll(text=True))))
+        keywords = string.join(keywords,sep=' ') if keywords else None
+        return screen_name, status, keywords
 
-    def _extract_status_timestamp(self,result):
+    def _extract_status_timestamp(self, result):
         span = result.find('span', {'class':'f rtdm'})
         delta = span.find('div', {'class':'rtdelta'})
         if delta:
-            timestamp = time.time()-int(delta.find(text=True))
+            timestamp = time.time() - int(delta.find(text=True))
             timestamp = time.gmtime(timestamp)
         else:
             timestamp = span.find(text=True)
             # Timestamp example:
             # Mar 29, 2011 2:17:05 AM
             # %b  %d, %Y  %I:%M:%S %p
-            timestamp = time.strptime(timestamp.strip(),'%b %d, %Y %I:%M:%S %p')
+            timestamp = time.strptime(timestamp.strip(), '%b %d, %Y %I:%M:%S %p')
 
         return datetime.fromtimestamp(time.mktime(timestamp))
 
-    def _extract_status_id(self,result):
+    def _extract_status_id(self, result):
         link = result.find('a', {'href':re.compile('/status/')})
         if not link:
             return None
-        id = re.findall('status/([\d]*)',link['href'])
+        id = re.findall('status/([\d]*)', link['href'])
         if not id:
             return None
         return long(id[0])
@@ -193,7 +200,7 @@ class RealtimeSearch(object):
         safe_url = url % {'tld':self._tld}
 
         # Try to get the older link
-        links = soup.find('div',{'class':'s'})
+        links = soup.find('div', {'class':'s'})
         if links:
             links = links.findAll('a')            
             if links and links[0]['href']:
@@ -214,15 +221,15 @@ class RealtimeSearch(object):
         # Set new interval
         int_re_n = int_rs
         int_rs_n = str(int(int_rs) - self._interval)
-        if int_rs_n<int_hs:
-            int_hs_n = str(int(int_hs)-RealtimeSearch.DAY)
-            int_he_n = str(int(int_he)-RealtimeSearch.DAY)
+        if int_rs_n < int_hs:
+            int_hs_n = str(int(int_hs) - RealtimeSearch.DAY)
+            int_he_n = str(int(int_he) - RealtimeSearch.DAY)
         
         # Replace the parameters in the url
-        current_url = re.sub(int_hs,int_hs_n,current_url)
-        current_url = re.sub(int_he,int_he_n,current_url)
-        current_url = re.sub(int_rs,int_rs_n,current_url)
-        current_url = re.sub(int_re,int_re_n,current_url)
+        current_url = re.sub(int_hs, int_hs_n, current_url)
+        current_url = re.sub(int_he, int_he_n, current_url)
+        current_url = re.sub(int_rs, int_rs_n, current_url)
+        current_url = re.sub(int_re, int_re_n, current_url)
         
         return current_url
         
@@ -242,5 +249,5 @@ class RealtimeSearch(object):
             else:
                 return m.group(0)
 
-        s =    re.sub(r'&#(\d+);',  ascii_replacer, str, re.U)
+        s = re.sub(r'&#(\d+);', ascii_replacer, str, re.U)
         return re.sub(r'&([^;]+);', entity_replacer, s, re.U)
