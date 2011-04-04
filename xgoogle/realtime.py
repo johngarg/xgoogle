@@ -16,31 +16,17 @@ import urllib
 from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
 
+from search import SearchError
 from browser import Browser, BrowserError
 
-class SearchError(Exception):
+class RealtimeSearchError(SearchError):
     """
-    Base class for Google Search exceptions.
+    Base class for Google Realtime Search exceptions.
     """
     pass
 
-class ParseError(SearchError):
-    """
-    Parse error in Google results.
-    self.msg attribute contains explanation why parsing failed
-    self.tag attribute contains BeautifulSoup object with the most relevant tag that failed to parse
-    Thrown only in debug mode
-    """
-     
-    def __init__(self, msg, tag):
-        self.msg = msg
-        self.tag = tag
-
-    def __str__(self):
-        return self.msg
-
-    def html(self):
-        return self.tag.prettify()
+class CaptchaError(SearchError):
+    pass
 
 class RealtimeResult:
     def __init__(self, screen_name, status, timestamp, id):
@@ -50,7 +36,7 @@ class RealtimeResult:
         self.id = id
 
     def __str__(self):
-        return 'Realtime Result: %s\n\t%s\nAt: %s' % (self.screen_name, self.status, self.timestamp)
+        return 'Realtime Result:\n\t%s\n\t%s\n\t%s' % (self.screen_name, self.status, self.timestamp)
 
 class RealtimeSearch(object):
     BASE_URL = "http://www.google.%(tld)s"
@@ -102,18 +88,15 @@ class RealtimeSearch(object):
         
         # Check captcha
         if self._check_captcha(page):
-            self.eor = True
-            return
+            raise CaptchaError, "Found Captcha"
 
-        #search_info = self._extract_info(page)
         results = self._extract_results(page)
-        
         self._page += 1
         
         # Get older link
         self.older = self._extract_older_link(page)
         if not self.older:
-            self.eor = True
+            raise RealtimeSearchError, "Could not compute older results' link"
 
         return results
 
@@ -141,7 +124,7 @@ class RealtimeSearch(object):
         try:
             page = self.browser.get_page(safe_url)
         except BrowserError, e:
-            raise SearchError, "Failed getting %s: %s" % (e.url, e.error)
+            raise RealtimeSearchError, "Failed getting %s: %s" % (e.url, e.error)
 
         #file = open(r"C:/Users/rxuriguera/Desktop/search.htm")
         #file = open(r"C:/Users/rxuriguera/Desktop/sorry.htm")
