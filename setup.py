@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
-__version__ = '1.3'
+__version__ = '1.3.0.1000.1'
 
 import os
 def _read(fname):
@@ -10,7 +10,7 @@ def _read(fname):
 setup(
     name='xgoogle',
     version=__version__,
-    description="Python library to Google services (google search, google sets, google translate, sponsored links)",
+    description="Python library to Google services (google search, google sets, google translate, sponsored links, google realtime)",
     long_description=_read('readme.txt'),
     classifiers=[],
     keywords='google search',
