@@ -10,7 +10,7 @@ def _read(fname):
 setup(
     name='xgoogle',
     version=__version__,
-    description="Python library to Google services (google search, google images, google videos, google translate)",
+    description="Python library to Google services (Google Search, Google Images, Google Videos, Google Translate, Google Real-Time)",
     long_description=_read('README.md'),
     classifiers=[],
     keywords='google search',
