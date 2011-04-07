@@ -12,7 +12,6 @@
 import re
 from datetime import datetime
 import time
-import string
 import urllib
 from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
@@ -121,18 +120,11 @@ class RealtimeSearch(object):
         else:
             safe_url = self.older
 
-        # TODO: Uncomment and remove
         self._last_search_url = safe_url
         try:
             page = self.browser.get_page(safe_url)
         except BrowserError, e:
             raise RealtimeSearchError, "Failed getting %s: %s" % (e.url, e.error)
-
-        #file = open(r"C:/Users/rxuriguera/Desktop/search.htm")
-        #file = open(r"C:/Users/rxuriguera/Desktop/sorry.htm")
-        #page = file.read()
-        #file.close()
-
         return BeautifulSoup(page)
 
     def _extract_results(self, soup):
