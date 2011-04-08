@@ -86,7 +86,7 @@ class RealtimeSearch(object):
             return []
         
         page = self._get_results_page()
-        
+
         # Check captcha
         if self._check_captcha(page):
             raise CaptchaError, "Found Captcha"
@@ -210,11 +210,17 @@ class RealtimeSearch(object):
         int_hs, int_he, int_rs, int_re = matchobj.group('hs', 'he', 'rs', 're')
         
         # Set new interval
-        int_re_n = int_rs
+#        int_re_n = int_rs
+    
+        int_re_n = str(int(int_re) - self._interval)
         int_rs_n = str(int(int_rs) - self._interval)
-        if int_rs_n < int_hs:
-            int_hs_n = str(int(int_hs) - RealtimeSearch.DAY)
-            int_he_n = str(int(int_he) - RealtimeSearch.DAY)
+        
+        int_hs_n = str(int(int_hs) - self._interval)
+        int_he_n = str(int(int_he) - self._interval)
+        
+#        if int_rs_n < int_hs:
+#            int_hs_n = str(int(int_hs) - RealtimeSearch.DAY)
+#            int_he_n = str(int(int_he) - RealtimeSearch.DAY)
         
         # Replace the parameters in the url
         current_url = re.sub(int_hs, int_hs_n, current_url)
