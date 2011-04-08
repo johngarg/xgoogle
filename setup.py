@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
-__version__ = '1.3.0.1000.1'
+__version__ = '1.3.0.1000.2'
 
 import os
 def _read(fname):
