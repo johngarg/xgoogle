@@ -1077,8 +1077,7 @@ class GoogleFaceImageSearch(object):
         return FaceImageSearchResult(trumnail, image)
 
     def _extract_title_url(self, result):
-        #title_a = result.find('a', {'class': re.compile(r'\bl\b')})
-        title_a = result.find('a')
+        title_a = result.find('a', {'class': 'l'})
         if not title_a:
             self._maybe_raise(ParseError, "Title tag in Google search result was not found", result)
             return None, None
@@ -1094,7 +1093,7 @@ class GoogleFaceImageSearch(object):
         return title, url
 
     def _extract_description(self, result):
-        desc_div = result.find('div', {'class': re.compile(r'\bs\b')})
+        desc_div = result.find('span', {'class': 'st'})
         if not desc_div:
             self._maybe_raise(ParseError, "Description tag in Google search result was not found", result)
             return None
