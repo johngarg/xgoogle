@@ -899,6 +899,8 @@ class GoogleFaceImageSearch(object):
             self._re_search_strings = ("Ergebnisse", "von", u"ungefähr")
         elif lang == "es":
             self._re_search_strings = ("Resultados", "de", "aproximadamente")
+        elif lang == "fr":
+            self._re_search_strings = ("résultats", "de", "Environ")
         # add more localised versions here
         else:
             self._re_search_strings = ("Results", "of", "about")
@@ -1027,25 +1029,31 @@ class GoogleFaceImageSearch(object):
             page = self.browser.get_page(safe_url)
         except BrowserError, e:
             raise SearchError, "Failed getting %s: %s" % (e.url, e.error)
-
         return BeautifulSoup(page)
 
     def _extract_info(self, soup):
         empty_info = {'from': 0, 'to': 0, 'total': 0}
-        div_ssb = soup.find('div', id='ssb')
+        div_ssb = soup.find('div', id='resultStats')
         if not div_ssb:
             self._maybe_raise(ParseError, "Div with number of results was not found on Google search page", soup)
             return empty_info
-        p = div_ssb.find('p')
+        #p = div_ssb.find('p')
+        p = div_ssb
         if not p:
             self._maybe_raise(ParseError, """<p> tag within <div id="ssb"> was not found on Google search page""", soup)
             return empty_info
         txt = ''.join(p.findAll(text=True))
         txt = txt.replace(',', '')
-        matches = re.search(r'%s (\d+) - (\d+) %s (?:%s )?(\d+)' % self._re_search_strings, txt, re.U)
+        txt = txt.replace('&nbsp;', '')
+        #matches = re.search(r'(\d+) - (\d+) %s (?:%s )?(\d+)' % self._re_search_strings, txt, re.U)
+        #matches = re.search(r'(\d+) %s' % self._re_search_strings[0], txt, re.U|re.I)
+        matches = re.search(r'(\d+)', txt, re.U)
+
         if not matches:
+            print self._re_search_strings[0]
+            print txt
             return empty_info
-        return {'from': int(matches.group(1)), 'to': int(matches.group(2)), 'total': int(matches.group(3))}
+        return {'from': 0, 'to': 0, 'total': int(matches.group(1))}
 
     def _extract_results(self, soup):
         # Should extract <a href="/url?q=
