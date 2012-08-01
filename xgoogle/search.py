@@ -260,6 +260,10 @@ class GoogleSearch(object):
         if not desc_div:
             self._maybe_raise(ParseError, "Description tag in Google search result was not found", result)
             return None
+        desc_span = desc_div.find('span', {'class': 'st'})
+        if not desc_span:
+            self._maybe_raise(ParseError, "Description tag in Google search result was not found", result)
+            return None
 
         desc_strs = []
         def looper(tag):
@@ -275,8 +279,8 @@ class GoogleSearch(object):
                 except AttributeError:
                     desc_strs.append(t)
 
-        looper(desc_div)
-        looper(desc_div.find('wbr')) # BeautifulSoup does not self-close <wbr>
+        looper(desc_span)
+        looper(desc_span.find('wbr')) # BeautifulSoup does not self-close <wbr>
 
         desc = ''.join(s for s in desc_strs if s)
         return self._html_unescape(desc)
