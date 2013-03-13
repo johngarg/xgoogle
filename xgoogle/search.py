@@ -253,6 +253,9 @@ class GoogleSearch(object):
         match = re.match(r'/url\?q=((http|ftp|https)[^&]+)&', url)
         if match:
             url = urllib.unquote(match.group(1))
+        match = re.match(r'/interstitial\?url=((http|ftp|https)[^&]+)&', url)
+        if match:
+            url = urllib.unquote(match.group(1))
         return title, url
 
     def _extract_description(self, result):
