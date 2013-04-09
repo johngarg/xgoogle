@@ -7,6 +7,14 @@ The code is licensed under MIT license.
 
 --------------------------------------------------------------------------
 
+I want to make this library more generally. 
+todo list:
+* support more search engines
+* move the url and re logic to settings file
+* support auto login via some website
+
+--------------------------------------------------------------------------
+
 At the moment it contains:
  * Google Search module xgoogle/search.py.
    http://www.catonmat.net/blog/python-library-for-google-search/
