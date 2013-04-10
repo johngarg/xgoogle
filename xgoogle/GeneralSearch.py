@@ -445,15 +445,11 @@ class GeneralSearch(object):
 
 
     def _general_get_results_page(self):
-        if(self.engine=='baidu'):
-            return self._get_results_page_baidu()
-        else:
-            return self._get_results_page_google()
-#        _get_page = {
-#                'google': lambda: _get_results_page_google(self),
-#                'baidu': lambda: _get_results_page_baidu(self)
-#                }
-#        return _get_page[self.engine]()
+        _get_page = {
+                'google': lambda: self._get_results_page_google(),
+                'baidu': lambda: self._get_results_page_baidu()
+                }
+        return _get_page[self.engine]()
 
     def _general_extract_info(self, soup):
         if(self.engine=='baidu'):
