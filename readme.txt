@@ -12,7 +12,16 @@ todo list:
 * support more search engines
 * move the url and re logic to settings file
 * support auto login via some website
-
+* support multi search engine autosearch periodly, for example:
+    autosearch  -k,--keyword=keyword
+                -e,--engine=google, baidu, yahoo...
+                -i,--internal=5(minutes)
+                -n,--num=500
+                -q,--ini=settings file name
+                -s,--sort
+                -f,--filter
+                -c,--chart
+                -h,--help
 --------------------------------------------------------------------------
 
 At the moment it contains:
