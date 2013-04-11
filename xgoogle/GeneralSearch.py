@@ -17,6 +17,10 @@ import urllib
 from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
 
+### ini handler
+import ConfigParser
+import string, os, sys
+
 from browser import Browser, BrowserError
 
 class GeneralSearchError(Exception):
@@ -53,18 +57,6 @@ class GeneralSearchResult:
         return 'General Search Result: "%s"' % self.title
 
 class GeneralSearch(object):
-    SEARCH_URL_0 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&btnG=Google+Search"
-    NEXT_PAGE_0 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&start=%(start)d"
-    SEARCH_URL_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&btnG=Google+Search"
-    NEXT_PAGE_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
-
-    BAIDU_URL = "http://www.baidu.com/s?wd=%(query)s&pn=%(num)d"
-
-#    ENGINE['google'][SEARCH_URL_0] = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&btnG=Google+Search"
-#    ENGINE['google'][NEXT_PAGE_0] = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&start=%(start)d"
-#    ENGINE['google'][SEARCH_URL_1] = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&btnG=Google+Search"
-#    ENGINE['google'][NEXT_PAGE_1] = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
-
     def __init__(self, query, engine="google", random_agent=True, debug=False, lang="en", tld="com.hk", re_search_strings=None):
         self.query = query
         self.debug = debug
@@ -92,6 +84,11 @@ class GeneralSearch(object):
         # add more localised versions here
         else:
             self._re_search_strings = ("Results", "of", "about")
+
+        # read ini
+        self.cf = ConfigParser.RawConfigParser()
+        self.conf = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'GeneralSearch.conf')
+        self.cf.read( self.conf )
 
         if random_agent:
             self.browser.set_random_user_agent()
@@ -161,11 +158,12 @@ class GeneralSearch(object):
             return []
         MAX_VALUE = 1000000
         page = self._general_get_results_page()
-        #search_info = self._general_extract_info(page)
+
+        search_info = self._general_extract_info(page)
         results = self._general_extract_results(page)
-        search_info = {'from': self.results_per_page*self._page,
-                       'to': self.results_per_page*self._page + len(results),
-                       'total': MAX_VALUE}
+#        search_info = {'from': self.results_per_page*self._page,
+#                       'to': self.results_per_page*self._page + len(results),
+#                       'total': MAX_VALUE}
         if not self.results_info:
             self.results_info = search_info
             if self.num_results == 0:
@@ -190,14 +188,14 @@ class GeneralSearch(object):
     def _get_results_page_google(self):
         if self._page == 0:
             if self._results_per_page == 10:
-                url = GeneralSearch.SEARCH_URL_0
+                url = self.cf.get(self.engine, "SEARCH_URL_0")
             else:
-                url = GeneralSearch.SEARCH_URL_1
+                url = self.cf.get(self.engine, "SEARCH_URL_1")
         else:
             if self._results_per_page == 10:
-                url = GeneralSearch.NEXT_PAGE_0
+                url = self.cf.get(self.engine, "NEXT_PAGE_0")
             else:
-                url = GeneralSearch.NEXT_PAGE_1
+                url = self.cf.get(self.engine, "NEXT_PAGE_1")
 
         safe_url = [url % { 'query': urllib.quote_plus(self.query),
                            'start': self._page * self._results_per_page,
@@ -221,7 +219,7 @@ class GeneralSearch(object):
         return BeautifulSoup(page)
 
     def _get_results_page_baidu(self):
-        url = GeneralSearch.BAIDU_URL
+        url = self.cf.get(self.engine, "SEARCH_URL")
 
         safe_url = [url % { 'query': urllib.quote_plus(self.query),
                            'num': self._page * self._results_per_page }]
@@ -283,7 +281,8 @@ class GeneralSearch(object):
         results = soup.findAll('li', {'class': 'g'})
         ret_res = []
         for result in results:
-            title_a = result.find('a', {'class': 'l'})
+            #title_a = result.find('a', {'class': 'l'})
+            title_a = result.find('a')
             if not title_a:
                 self._maybe_raise(GeneralParseError, "Title tag in Google search result was not found", result)
                 continue
@@ -446,7 +445,7 @@ class GeneralSearch(object):
 
     def _general_get_results_page(self):
         _get_page = {
-                'google': lambda: self._get_results_page_google(),
+                'google': lambda: self._get_results_page_baidu(),
                 'baidu': lambda: self._get_results_page_baidu()
                 }
         return _get_page[self.engine]()
