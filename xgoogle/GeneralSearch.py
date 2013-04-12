@@ -21,6 +21,8 @@ from BeautifulSoup import BeautifulSoup
 import ConfigParser
 import string, os, sys
 
+import ast
+
 from browser import Browser, BrowserError
 
 class GeneralSearchError(Exception):
@@ -185,6 +187,7 @@ class GeneralSearch(object):
         if self.debug:
             raise cls(*arg)
 
+    # not used, but some code should be referenced in future
     def _get_results_page_google(self):
         if self._page == 0:
             if self._results_per_page == 10:
@@ -218,7 +221,7 @@ class GeneralSearch(object):
             raise GeneralSearchError, "Failed getting %s: %s" % (e.url, e.error)
         return BeautifulSoup(page)
 
-    def _get_results_page_baidu(self):
+    def _general_get_results_page(self):
         url = self.cf.get(self.engine, "SEARCH_URL")
 
         safe_url = [url % { 'query': urllib.quote_plus(self.query),
@@ -233,33 +236,14 @@ class GeneralSearch(object):
             raise GeneralSearchError, "Failed getting %s: %s" % (e.url, e.error)
         return BeautifulSoup(page)
 
-    def _extract_info_google(self, soup):
+    def _general_extract_info(self, soup):
         empty_info = {'from': 0, 'to': 0, 'total': 0}
-        div_ssb = soup.find('div', id='resultStats')
-        if not div_ssb:
-            self._maybe_raise(GeneralParseError, "Div with number of results was not found on Google search page", soup)
-            return empty_info
-        #p = div_ssb.find('p')
-        p = div_ssb
-        if not p:
-            self._maybe_raise(GeneralParseError, """<p> tag within <div id="ssb"> was not found on Google search page""", soup)
-            return empty_info
-        txt = ''.join(p.findAll(text=True))
-        txt = txt.replace(',', '')
-        txt = txt.replace('&nbsp;', '')
-        #matches = re.search(r'(\d+) - (\d+) %s (?:%s )?(\d+)' % self._re_search_strings, txt, re.U)
-        #matches = re.search(r'(\d+) %s' % self._re_search_strings[0], txt, re.U|re.I)
-        matches = re.search(r'(\d+)', txt, re.U)
+ 
+        total_tag = self.cf.get(self.engine, "total_tag")
+        total_tag_filter = self.cf.get(self.engine, "total_tag_filter")
+        total_tag_filter = ast.literal_eval(total_tag_filter)
 
-        if not matches:
-            print self._re_search_strings[0]
-            print txt
-            return empty_info
-        return {'from': 0, 'to': 0, 'total': int(matches.group(1))}
-
-    def _extract_info_baidu(self, soup):
-        empty_info = {'from': 0, 'to': 0, 'total': 0}
-        div_ssb = soup.find('span', {'class': 'nums'})
+        div_ssb = soup.find(total_tag, total_tag_filter)
         if not div_ssb:
             self._maybe_raise(GeneralParseError, "Span with class:num of results was not found on Baidu search page", soup)
             return empty_info
@@ -277,12 +261,23 @@ class GeneralSearch(object):
             return empty_info
         return {'from': 0, 'to': 0, 'total': int(matches.group(1))}
 
-    def _extract_results_google(self, soup):
-        results = soup.findAll('li', {'class': 'g'})
+    def _general_extract_results(self, soup):
+        result_tag = self.cf.get(self.engine, "result_tag")
+        result_tag_filter = self.cf.get(self.engine, "result_tag_filter")
+        result_tag_filter = ast.literal_eval(result_tag_filter)
+
+        title_tag = self.cf.get(self.engine, "title_tag")
+        title_tag_filter = self.cf.get(self.engine, "title_tag_filter")
+        title_tag_filter = ast.literal_eval(title_tag_filter)
+
+        desc_tag = self.cf.get(self.engine, "desc_tag")
+        desc_tag_filter = self.cf.get(self.engine, "desc_tag_filter")
+        desc_tag_filter = ast.literal_eval(desc_tag_filter)
+
+        results = soup.findAll(result_tag, result_tag_filter)
         ret_res = []
         for result in results:
-            #title_a = result.find('a', {'class': 'l'})
-            title_a = result.find('a')
+            title_a = result.find(title_tag, title_tag_filter)
             if not title_a:
                 self._maybe_raise(GeneralParseError, "Title tag in Google search result was not found", result)
                 continue
@@ -294,103 +289,7 @@ class GeneralSearch(object):
             if match:
                 url = urllib.unquote(match.group(1))
 
-            desc_div = result.find('span', {'class': 'st'})
-            if not desc_div:
-                self._maybe_raise(GeneralParseError, "Description tag in Google search result was not found", result)
-                continue
-
-            desc_strs = []
-            def looper(tag):
-                if not tag: return
-                for t in tag:
-                    try:
-                        if t.name == 'br': break
-                    except AttributeError:
-                        pass
-
-                    try:
-                        desc_strs.append(t.string)
-                    except AttributeError:
-                        desc_strs.append(t)
-
-            looper(desc_div)
-            looper(desc_div.find('wbr')) # BeautifulSoup does not self-close <wbr>
-
-            desc = ''.join(s for s in desc_strs if s)
-            desc = self._html_unescape(desc)
-
-            if not title or not url or not desc:
-                eres = None
-            else:
-                eres = GeneralSearchResult(title, url, desc)
-
-            if eres:
-                ret_res.append(eres)
-        return ret_res
-
-    def _extract_result(self, result):
-        title, url = self._extract_title_url(result)
-        desc = self._extract_description(result)
-        if not title or not url or not desc:
-            return None
-        return GeneralSearchResult(title, url, desc)
-
-    def _extract_title_url(self, result):
-        title_a = result.find('a', {'class': 'l'})
-        if not title_a:
-            self._maybe_raise(GeneralParseError, "Title tag in Google search result was not found", result)
-            return None, None
-        title = ''.join(title_a.findAll(text=True))
-        title = self._html_unescape(title)
-        url = title_a['href']
-        match = re.match(r'/url\?q=(http[^&]+)&', url)
-        if match:
-            url = urllib.unquote(match.group(1))
-        return title, url
-
-    def _extract_description(self, result):
-        desc_div = result.find('span', {'class': 'st'})
-        if not desc_div:
-            self._maybe_raise(GeneralParseError, "Description tag in Google search result was not found", result)
-            return None
-
-        desc_strs = []
-        def looper(tag):
-            if not tag: return
-            for t in tag:
-                try:
-                    if t.name == 'br': break
-                except AttributeError:
-                    pass
-
-                try:
-                    desc_strs.append(t.string)
-                except AttributeError:
-                    desc_strs.append(t)
-
-        looper(desc_div)
-        looper(desc_div.find('wbr')) # BeautifulSoup does not self-close <wbr>
-
-        desc = ''.join(s for s in desc_strs if s)
-        return self._html_unescape(desc)
-
-    def _extract_results_baidu(self, soup):
-        results = soup.findAll('table', {'class': 'result'})
-        ret_res = []
-        for result in results:
-            title_a = result.find('a')
-            if not title_a:
-                self._maybe_raise(GeneralParseError, "Title tag in Google search result was not found", result)
-                continue
-
-            title = ''.join(title_a.findAll(text=True))
-            title = self._html_unescape(title)
-            url = title_a['href']
-            match = re.match(r'/url\?q=(http[^&]+)&', url)
-            if match:
-                url = urllib.unquote(match.group(1))
-
-            desc_div = result.find('font')
+            desc_div = result.find(desc_tag, desc_tag_filter)
             if not desc_div:
                 self._maybe_raise(GeneralParseError, "Description tag in Google search result was not found", result)
                 continue
@@ -441,26 +340,6 @@ class GeneralSearch(object):
 
         s =    re.sub(r'&#(\d+);',  ascii_replacer, str, re.U)
         return re.sub(r'&([^;]+);', entity_replacer, s, re.U)
-
-
-    def _general_get_results_page(self):
-        _get_page = {
-                'google': lambda: self._get_results_page_baidu(),
-                'baidu': lambda: self._get_results_page_baidu()
-                }
-        return _get_page[self.engine]()
-
-    def _general_extract_info(self, soup):
-        if(self.engine=='baidu'):
-            return self._extract_info_baidu(soup)
-        else:
-            return self._extract_info_google(soup)
-
-    def _general_extract_results(self, soup):
-        if(self.engine=='baidu'):
-            return self._extract_results_baidu(soup)
-        else:
-            return self._extract_results_google(soup)
         
 #class GoogleSearch(GeneralSearch):
     
