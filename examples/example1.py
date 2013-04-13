@@ -6,7 +6,8 @@
 
 from xgoogle.search import GoogleSearch, SearchError
 try:
-  gs = GoogleSearch("quick and dirty")
+  ask=raw_input("Enter key to be searched:")
+  gs = GoogleSearch(ask)
   gs.results_per_page = 50
   results = gs.get_results()
   for res in results:
