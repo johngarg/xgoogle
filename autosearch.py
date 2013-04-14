@@ -4,17 +4,18 @@
 ### handle options
 import sys, getopt
 
+keyword=""
+engine="google"
+internal=0
+num=0
+preference="autosearch.conf"
+sort=False
+filter=False
+chart=False
+
 def opt():
     opts, args = getopt.getopt(sys.argv[1:], "k:e:i:n:p:sfch", 
         ["keyword=", "engine=", "internal=", "num=", "preference=", "sort", "filter", "chart", "help"])
-    keyword=""
-    engine="google"
-    internal=0
-    num=0
-    preference="autosearch.conf"
-    sort=False
-    filter=False
-    chart=False
     for op, value in opts:
         if op == "-k" or op == "--keyword":
             keyword = value
@@ -70,7 +71,7 @@ finally:
 ### main logic
 from xgoogle.GeneralSearch import GeneralSearch
 
-gs=GeneralSearch('汽车', 'baidu')
+gs=GeneralSearch(keyword, 'baidu')
 results = gs.get_results()
 print gs.page
 print gs._last_search_url
@@ -84,7 +85,7 @@ print gs.num_results
 print results[0].title
 print 10*'*'
 
-gs2=GeneralSearch('汽车')
+gs2=GeneralSearch(keyword)
 results = gs2.get_results()
 print gs2.page
 print gs2._last_search_url
