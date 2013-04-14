@@ -103,7 +103,7 @@ class GeneralSearch(object):
             total = self._general_extract_total(page)
             if total == 0:
                 self.eor = True
-        return total
+        return self.results_info['total']
 
     @property
     def last_search_url(self):
@@ -169,7 +169,7 @@ class GeneralSearch(object):
                        'total': total}
         if not self.results_info:
             self.results_info = search_info
-            if self.num_results == 0:
+            if total == 0:
                 self.eor = True
                 return []
         if not results:

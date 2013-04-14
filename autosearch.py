@@ -5,61 +5,96 @@
 import sys, getopt
 
 def opt():
-    opts, args = getopt.getopt(sys.argv[1:], "k:e:i:n:q:sfc", 
-        ["keyword=", "engine=", "internal=", "num=", "ini=", "sort", "filter", "chart"])
+    opts, args = getopt.getopt(sys.argv[1:], "k:e:i:n:p:sfch", 
+        ["keyword=", "engine=", "internal=", "num=", "preference=", "sort", "filter", "chart", "help"])
     keyword=""
-    engine=""
+    engine="google"
     internal=0
     num=0
-    ini=""
+    preference="autosearch.conf"
     sort=False
     filter=False
     chart=False
     for op, value in opts:
-        if op == "-k":
+        if op == "-k" or op == "--keyword":
             keyword = value
-        elif op == "-e":
+        elif op == "-e" or op == "--engine":
             engine = value
-        elif op == "-h":
+        elif op == "-i" or op == "--internal":
+            internal = value
+        elif op == "-n" or op == "--num":
+            num = value
+        elif op == "-p" or op == "--preference":
+            preference = value
+        elif op == "-s" or op == "--sort":
+            sort = True
+        elif op == "-f" or op == "--filter":
+            filter = True
+        elif op == "-c" or op == "--chart":
+            chart = True
+        elif op == "-h" or op == "--help":
             usage()
             sys.exit()
+    print keyword
+    print engine
+    print internal
+    print num
+    print preference
+    print sort
+    print filter
+    print chart
 
 def usage():
+	print """autosearch is an automatically tools used in command line, the usage:"""
 	print """autosearch
     -k,--keyword=keyword
     -e,--engine=google, baidu, yahoo...
     -i,--internal=5(minutes)
     -n,--num=500
-    -q,--ini=settings file name
+    -p,--preference=preference file name
     -s,--sort
     -f,--filter
     -c,--chart
     -h,--help"""
 
-opt()
-usage()
-sys.exit()
+try:
+	opt()
+except Exception, e:
+	usage()
+	sys.exit()
+else:
+	pass
+finally:
+	pass
 
 ### main logic
 from xgoogle.GeneralSearch import GeneralSearch
 
 gs=GeneralSearch('汽车', 'baidu')
 results = gs.get_results()
+print gs.page
 print gs._last_search_url
 print gs.num_results
 print results[0].title
-#results = gs.get_results()
-#print gs._last_search_url
-#print gs.num_results
-#print results[0].title
+print 10*'*'
+results = gs.get_results()
+print gs.page
+print gs._last_search_url
+print gs.num_results
+print results[0].title
+print 10*'*'
 
 gs2=GeneralSearch('汽车')
 results = gs2.get_results()
+print gs2.page
 print gs2._last_search_url
 print gs2.num_results
 print results[0].title
-#results = gs.get_results()
-#print gs._last_search_url
-#print gs.num_results
-#print results[0].title
+print 10*'*'
+results = gs2.get_results()
+print gs2.page
+print gs2._last_search_url
+print gs2.num_results
+print results[0].title
+print 10*'*'
 
