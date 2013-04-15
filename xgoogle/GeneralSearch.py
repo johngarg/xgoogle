@@ -66,6 +66,8 @@ class GeneralSearch(object):
         self.conf = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'GeneralSearch.conf')
         self.cf.read( self.conf )
 
+        print query
+        
         self.query = query
         self.debug = debug
         self.engine = engine

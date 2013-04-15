@@ -4,46 +4,43 @@
 ### handle options
 import sys, getopt
 
-keyword=""
-engine="google"
-internal=0
-num=0
-preference="autosearch.conf"
-sort=False
-filter=False
-chart=False
+KEYWORD=""
+ENGINE=[]
+INTERNAL=0
+NUM=0
+PREFERENCE="autosearch.conf"
+OUTPUT=""
+SORT=False
+FILTER=False
+CHART=False
 
 def opt():
+    global KEYWORD, ENGINE, INTERNAL, NUM, PREFERENCE, OUTPUT, SORT, FILTER, CHART
+
     opts, args = getopt.getopt(sys.argv[1:], "k:e:i:n:p:sfch", 
         ["keyword=", "engine=", "internal=", "num=", "preference=", "sort", "filter", "chart", "help"])
     for op, value in opts:
         if op == "-k" or op == "--keyword":
-            keyword = value
+            KEYWORD = value
         elif op == "-e" or op == "--engine":
-            engine = value
+            ENGINE = value
         elif op == "-i" or op == "--internal":
-            internal = value
+            INTERNAL = value
         elif op == "-n" or op == "--num":
-            num = value
+            NUM = value
         elif op == "-p" or op == "--preference":
-            preference = value
+            PREFERENCE = value
+        elif op == "-o" or op == "--output":
+            OUTPUT = value
         elif op == "-s" or op == "--sort":
-            sort = True
+            SORT = True
         elif op == "-f" or op == "--filter":
-            filter = True
+            FILTER = True
         elif op == "-c" or op == "--chart":
-            chart = True
+            CHART = True
         elif op == "-h" or op == "--help":
             usage()
             sys.exit()
-    print keyword
-    print engine
-    print internal
-    print num
-    print preference
-    print sort
-    print filter
-    print chart
 
 def usage():
 	print """autosearch is an automatically tools used in command line, the usage:"""
@@ -53,6 +50,7 @@ def usage():
     -i,--internal=5(minutes)
     -n,--num=500
     -p,--preference=preference file name
+    -o,--output
     -s,--sort
     -f,--filter
     -c,--chart
@@ -60,7 +58,9 @@ def usage():
 
 try:
 	opt()
+	print ENGINE
 except Exception, e:
+	print e
 	usage()
 	sys.exit()
 else:
@@ -70,32 +70,37 @@ finally:
 
 ### main logic
 from xgoogle.GeneralSearch import GeneralSearch
+import time
+import string
 
-gs=GeneralSearch(keyword, 'baidu')
-results = gs.get_results()
-print gs.page
-print gs._last_search_url
-print gs.num_results
-print results[0].title
-print 10*'*'
-results = gs.get_results()
-print gs.page
-print gs._last_search_url
-print gs.num_results
-print results[0].title
-print 10*'*'
+if INTERNAL:
+	while True:
+		gs=GeneralSearch(KEYWORD, 'baidu')
+		results = gs.get_results()
+		print gs.page
+		print gs._last_search_url
+		print gs.num_results
+		print results[0].title
+		print 10*'*'
+		results = gs.get_results()
+		print gs.page
+		print gs._last_search_url
+		print gs.num_results
+		print results[0].title
+		print 10*'*'
 
-gs2=GeneralSearch(keyword)
-results = gs2.get_results()
-print gs2.page
-print gs2._last_search_url
-print gs2.num_results
-print results[0].title
-print 10*'*'
-results = gs2.get_results()
-print gs2.page
-print gs2._last_search_url
-print gs2.num_results
-print results[0].title
-print 10*'*'
+#		gs2=GeneralSearch(KEYWORD)
+#		results = gs2.get_results()
+#		print gs2.page
+#		print gs2._last_search_url
+#		print gs2.num_results
+#		print results[0].title
+#		print 10*'*'
+#		results = gs2.get_results()
+#		print gs2.page
+#		print gs2._last_search_url
+#		print gs2.num_results
+#		print results[0].title
+#		print 10*'*'
 
+		time.sleep(string.atof(INTERNAL))
