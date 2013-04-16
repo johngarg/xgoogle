@@ -6,5 +6,7 @@ xgoogle.egg-info
 .pydevproject
 .settings
 
-*output*
+*.output
+output.*
+
 
