@@ -5,3 +5,6 @@ xgoogle.egg-info
 .project
 .pydevproject
 .settings
+
+*output*
+
