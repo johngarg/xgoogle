@@ -19,7 +19,7 @@ from BeautifulSoup import BeautifulSoup
 
 ### ini handler
 import ConfigParser
-import string, os, sys
+import string, sys
 
 import ast
 
@@ -59,11 +59,11 @@ class GeneralSearchResult:
         return 'General Search Result: "%s"' % self.title
 
 class GeneralSearch(object):
-    def __init__(self, query, engine="google", random_agent=True, debug=False, lang="en", tld="com.hk", re_search_strings=None):
+    def __init__(self, query, engine="google", conf="", random_agent=True, debug=False, lang="en", tld="com.hk", re_search_strings=None):
 
         # read ini
         self.cf = ConfigParser.RawConfigParser()
-        self.conf = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'GeneralSearch.conf')
+        self.conf = conf
         self.cf.read( self.conf )
 
         self.query = query
@@ -80,7 +80,20 @@ class GeneralSearch(object):
         self._last_from = 0
         self._lang = lang
         self._tld = tld
-        
+        self._encoding = 'utf8'
+
+        try:
+            self._encoding = self.cf.get(self.engine, "encoding")
+        except Exception, e:
+            pass
+        else:
+            pass
+        finally:
+            pass
+
+        print self._encoding
+        self.query = self.query.encode(self._encoding, 'ignore')
+
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
@@ -224,15 +237,23 @@ class GeneralSearch(object):
 
     def _general_get_results_page(self):
         url = self.cf.get(self.engine, "SEARCH_URL")
+        page_mode = self.cf.getint(self.engine, "PAGE_MODE")
 
-        safe_url = [url % { 'query': urllib.quote_plus(self.query),
-                           'num': self._page * self._results_per_page }]
+        if page_mode==1:
+            safe_url = [url % { 'query': urllib.quote_plus(self.query),
+                               'num': self._page * self._results_per_page }]
+        elif page_mode==2:
+            safe_url = [url % { 'query': urllib.quote_plus(self.query),
+                               'num': self._page + 1 }]
+        else:
+            safe_url = [url % { 'query': urllib.quote_plus(self.query),
+                               'num': self._page + 1 }]
         
         safe_url = "".join(safe_url)
         self._last_search_url = safe_url
         
         try:
-            page = self.browser.get_page(safe_url)
+            page = self.browser.get_page(safe_url).decode(self._encoding, 'ignore')
         except BrowserError, e:
             raise GeneralSearchError, "Failed getting %s: %s" % (e.url, e.error)
         return BeautifulSoup(page)
