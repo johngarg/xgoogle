@@ -282,6 +282,19 @@ class GeneralSearch(object):
         return int(matches.group(1))
 
     def _general_extract_results(self, soup):
+        result_container_tag = ''
+        result_container_tag_filter = {}
+        try:
+            result_container_tag = self.cf.get(self.engine, "result_container_tag")
+            result_container_tag_filter = self.cf.get(self.engine, "result_container_tag_filter")
+            result_container_tag_filter = ast.literal_eval(result_container_tag_filter)
+        except Exception, e:
+            pass
+        else:
+            pass
+        finally:
+            pass
+
         result_tag = self.cf.get(self.engine, "result_tag")
         result_tag_filter = self.cf.get(self.engine, "result_tag_filter")
         result_tag_filter = ast.literal_eval(result_tag_filter)
@@ -293,6 +306,9 @@ class GeneralSearch(object):
         desc_tag = self.cf.get(self.engine, "desc_tag")
         desc_tag_filter = self.cf.get(self.engine, "desc_tag_filter")
         desc_tag_filter = ast.literal_eval(desc_tag_filter)
+
+        if result_container_tag!='':
+            soup = soup.find(result_container_tag, result_container_tag_filter)
 
         results = soup.findAll(result_tag, result_tag_filter)
         ret_res = []
