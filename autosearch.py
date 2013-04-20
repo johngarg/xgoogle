@@ -168,13 +168,10 @@ while True:
 			#DATA[index][1].append([time.strftime("%Y-%m-%d %X", time.localtime()), gs.num_results])
 			DATA[index][1].append([start_time, gs.num_results])
 
-		count=0
-		over=False
+		count=1
 		while True:
 			for r in results:
-				count=count+1
 				if count>NUM:
-					over=True
 					break
 				try_output( "results[%d]: " % count )
 				for k in FORMAT:
@@ -183,7 +180,8 @@ while True:
 
 					try_output( "%s" % c )
 				try_output( 80*'+' )
-			if count==0 or over:
+				count=count+1
+			if count>NUM:
 				break
 			results = gs.get_results()
 
