@@ -65,8 +65,9 @@ def opt():
             VERBOSE = True
         elif op == "-h" or op == "--help":
             usage()
+            sys.exit()
         else:
-            usage()
+            error( "warning: option %s not recognized, ignored" % op )
 
 def usage():
 	print """autosearch is an automatically tools used in command line, the usage:"""
@@ -153,7 +154,7 @@ while True:
 		gs=GeneralSearch(KEYWORD.decode(ENCODING), e, PREFERENCE)
 		results = gs.get_results()
 		print gs.num_results
-		print gs._last_search_url
+		#print gs._last_search_url
 		
 		#s1 = str.format( "%s: %d results of \"" % ( e.upper(), gs.num_results ) )
 		#s2 = str.format( "\" --- %s" % ( time.strftime("%Y-%m-%d %X", time.localtime())) )

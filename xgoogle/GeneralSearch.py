@@ -91,7 +91,7 @@ class GeneralSearch(object):
         finally:
             pass
 
-        print self._encoding
+        #print self._encoding
         self.query = self.query.encode(self._encoding, 'ignore')
 
         if re_search_strings:
@@ -252,6 +252,8 @@ class GeneralSearch(object):
         safe_url = "".join(safe_url)
         self._last_search_url = safe_url
         
+        print safe_url
+
         try:
             page = self.browser.get_page(safe_url).decode(self._encoding, 'ignore')
         except BrowserError, e:
