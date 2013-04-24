@@ -9,7 +9,8 @@ KEYWORD=""
 ENGINE=[]
 INTERNAL=0
 NUM=10
-PREFERENCE=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'autosearch.conf')
+#PREFERENCE=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'autosearch.conf')
+PREFERENCE='autosearch.conf'
 FORMAT=['title', 'url', 'desc']
 WRITE="autosearch.output"
 FILTER=""
@@ -40,7 +41,7 @@ def opt():
             		error( "warning: %s is not supported, ignored" % e )
             		ENGINE.remove(e)
             	else:
-            		DATA.append([e, []])
+            		DATA.append([e, [[0,0]]])
         elif op == "-i" or op == "--internal":
             INTERNAL = float(value)
         elif op == "-n" or op == "--num":
@@ -148,7 +149,7 @@ import time
 import string
 import time
 
-start_time = 0
+start_time = 1
 while True:
 	for e in ENGINE:
 		gs=GeneralSearch(KEYWORD.decode(ENCODING), e, PREFERENCE)
