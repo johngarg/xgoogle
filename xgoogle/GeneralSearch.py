@@ -177,6 +177,9 @@ class GeneralSearch(object):
 
         total = self._general_extract_total(page)
         results = self._general_extract_results(page)
+
+        page.decompose()
+        
         search_info = {'from': self.results_per_page*self._page+1,
                        'to': self.results_per_page*self._page + len(results),
                        'total': total}
