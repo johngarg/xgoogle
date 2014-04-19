@@ -73,13 +73,31 @@ class FaceImageSearchResult:
         return 'Google Search Result: "%s"' % self.trumb
 
 class SearchResult:
-    def __init__(self, title, url, desc):
+    def __init__(self, title='', url='', content=''):
         self.title = title
         self.url = url
-        self.desc = desc
+        self.content = content
+
+    def getURL(self):
+        return self.url
+
+    def setURL(self, url):
+        self.url = url 
+
+    def getTitle(self):
+        return self.title
+
+    def setTitle(self, title):
+        self.title = title
+
+    def getContent(self):
+        return self.content
+
+    def setContent(self, content):
+        self.content = content
 
     def __str__(self):
-        return 'Google Search Result: "%s"' % self.title
+        return 'Google Search Result: "%s"' % self.url
 
 class GoogleSearch(object):
     SEARCH_URL_0 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&btnG=Google+Search"
@@ -316,7 +334,7 @@ class GoogleSearch(object):
             if not tag: return
             for t in tag:
                 try:
-                    if t.name == 'br': break
+                    if t.name == 'br': continue
                 except AttributeError:
                     pass
 
