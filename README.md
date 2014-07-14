@@ -8,12 +8,6 @@ Forked from [xgoogle](https://github.com/pkrumins/xgoogle)
 It was written by Peteris Krumins <peter@catonmat.net>.
 His blog is at http://www.catonmat.net  --  good coders code, great reuse.
 
-Contributors:
-* Holger Berndt
-* Juanjo Conti
-* Steve Steiner
-* azappella
-
 At the moment it contains:
  * Google Search module xgoogle/search.py.
    http://www.catonmat.net/blog/python-library-for-google-search/
@@ -202,6 +196,14 @@ Here is an example usage of LanguageDetector:
     True
 
 The "DetectionError" may get raised if the detection failed.
+
+Contributors:
+=============
+* Holger Berndt ('lang', 'tld' args, 'filetype' search, 'last_search_url' property, 'date indexed' search)
+* Juanjo Conti (Google Blog Search class)
+* Steve Steiner (setup.py)
+* azappella (bug fixes)
+* Nikola Milosevic (Google Face image search)
 
 
 License
