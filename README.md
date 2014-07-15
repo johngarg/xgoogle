@@ -197,6 +197,20 @@ Here is an example usage of LanguageDetector:
 
 The "DetectionError" may get raised if the detection failed.
 
+Google Image Search
+-------------------
+
+Please check example: examples/ImageExample.py
+
+Google Video Search
+-------------------
+
+Please check example: examples/exampleVideoSearch.py
+
+Requirements
+============
+Requires NLTK for Google video search, for install instruction see: http://www.nltk.org/install.html
+
 Contributors:
 =============
 * Holger Berndt ('lang', 'tld' args, 'filetype' search, 'last_search_url' property, 'date indexed' search)
@@ -204,7 +218,6 @@ Contributors:
 * Steve Steiner (setup.py)
 * azappella (bug fixes)
 * Nikola Milosevic (Google Face image search)
-
 
 License
 =======
