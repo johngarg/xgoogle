@@ -14,23 +14,33 @@ It was written by Peteris Krumins <peter@catonmat.net>.
 His blog is at http://www.catonmat.net  --  good coders code, great reuse.
 
 At the moment it contains:
- * Google Search module xgoogle/search.py.
+
+ * Google Search module (xgoogle/search.py).
+
    http://www.catonmat.net/blog/python-library-for-google-search/
 
- * Google Sponsored Links Search module xgoogle/sponsoredlinks.py
+ * Google Sponsored Links Search module (xgoogle/sponsoredlinks.py)
+
    http://www.catonmat.net/blog/python-library-for-google-sponsored-links-search/
 
- * Google Sets module xgoogle/googlesets.py
-   http://www.catonmat.net/blog/python-library-for-google-sets/
-   Note: Google Sets has been shut down since Sep 5, 2011
+ * (deprecated) Google Sets module (xgoogle/googlesets.py)
 
- * Google Translate module xgoogle/translate.py
+   http://www.catonmat.net/blog/python-library-for-google-sets/
+   
+   Please note that Google Sets has been shut down since Sep 5, 2011
+
+ * Google Translate module (xgoogle/translate.py)
+
    http://www.catonmat.net/blog/python-library-for-google-translate/
+
+ * Google Real-Time Search module (realtime.py)
+ * Google Image Search (check search.py)
+ * Google Video Search (check search.py)
 
 Disclaimer
 ==========
 
-It may voilate the Google [Terms of Service](https://www.google.com/intl/en/policies/terms/)
+Before using, please read Google [Terms of Service](https://www.google.com/intl/en/policies/terms/)
 
 > Don't misuse our Services.
 > For example, don't interfere with our Services or
