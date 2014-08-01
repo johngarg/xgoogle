@@ -1,4 +1,9 @@
+xgoogle
+=======
+
 Python wrapper to Google Search service.
+
+This is an command line search tool, which designed to fetch search results from search engine Google.
 
 Provide a wrapper for the following services:
 * Google Search
