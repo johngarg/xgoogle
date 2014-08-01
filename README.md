@@ -105,7 +105,8 @@ The SponsoredLinks object has several public methods and properties:
 A SponsoredLink object has four attributes -- "title", "desc", "url", and "display_url".
 They are Unicode strings, don't forget to use a proper encoding before outputting them.
 
---------------------------------------------------------------------------
+Google Sets module
+------------------
 
 Here is an example usage of Google Sets module:
 
@@ -149,9 +150,6 @@ Here is an example showing differences between SMALL_SET and LARGE_SET:
     [u'perl', u'python', u'java', u'c++', u'php', u'c', u'c#', u'javascript',
      u'howto', u'wiki', u'raid', u'dd', u'linux', u'ruby', u'language', u'xml',
      u'sgml', u'svn', u'kernel', ...]
-
-
---------------------------------------------------------------------------
 
 Google Translate
 ----------------
