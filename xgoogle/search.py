@@ -73,10 +73,10 @@ class FaceImageSearchResult:
         return 'Google Search Result: "%s"' % self.trumb
 
 class SearchResult:
-    def __init__(self, title='', url='', content=''):
+    def __init__(self, title='', url='', desc=''):
         self.title = title
         self.url = url
-        self.content = content
+        self.desc = desc
 
     def getURL(self):
         return self.url
@@ -90,11 +90,11 @@ class SearchResult:
     def setTitle(self, title):
         self.title = title
 
-    def getContent(self):
-        return self.content
+    def getdesc(self):
+        return self.desc
 
-    def setContent(self, content):
-        self.content = content
+    def setdesc(self, desc):
+        self.desc = desc
 
     def __str__(self):
         return 'Google Search Result: "%s"' % self.url
