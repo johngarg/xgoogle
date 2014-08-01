@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf8 -*- 
 #
 # Peteris Krumins (peter@catonmat.net)
 # http://www.catonmat.net  --  good coders code, great reuse
@@ -72,6 +73,8 @@ class PoolHTTPHandler(urllib2.HTTPHandler):
         return self.do_open(PoolHTTPConnection, req)
 
 class Browser(object):
+    """Provide a simulated browser object.
+    """
     def __init__(self, user_agent=BROWSERS[0], debug=False, use_pool=False):
         self.headers = {
             'User-Agent': user_agent,

@@ -11,7 +11,7 @@ setup(
     name='xgoogle',
     version=__version__,
     description="Python library to Google services (google search, google sets, google translate, sponsored links)",
-    long_description=_read('readme.txt'),
+    long_description=_read('README.md'),
     classifiers=[],
     keywords='google search',
     author='Peteris Krumins',

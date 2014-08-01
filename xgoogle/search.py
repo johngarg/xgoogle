@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# encoding: utf-8
+# -*- coding: utf8 -*-
 #
 # Peteris Krumins (peter@catonmat.net)
 # http://www.catonmat.net  --  good coders code, great reuse
@@ -175,6 +175,7 @@ class GoogleSearch(object):
             raise cls(*arg)
 
     def _get_results_page(self):
+        """Construct search url, and get the page content"""
         if self._page == 0:
             if self._results_per_page == 10:
                 url = GoogleSearch.SEARCH_URL_0
@@ -209,6 +210,9 @@ class GoogleSearch(object):
         return BeautifulSoup(page)
 
     def _extract_info(self, soup):
+        """Extract total results
+        Page X of about XXX results
+        """
         empty_info = {'from': 0, 'to': 0, 'total': 0}
         div_ssb = soup.find('div', id='ssb')
         if not div_ssb:
@@ -226,6 +230,7 @@ class GoogleSearch(object):
         return {'from': int(matches.group(1)), 'to': int(matches.group(2)), 'total': int(matches.group(3))}
 
     def _extract_results(self, soup):
+        """Extract results from the page"""
         results = soup.findAll('li', {'class': 'g'})
         ret_res = []
         for result in results:
@@ -235,6 +240,7 @@ class GoogleSearch(object):
         return ret_res
 
     def _extract_result(self, result):
+        """Extract title,url,desc for a result"""
         title, url = self._extract_title_url(result)
         desc = self._extract_description(result)
         if not title or not url:
@@ -243,6 +249,7 @@ class GoogleSearch(object):
 
     def _extract_title_url(self, result):
         #title_a = result.find('a', {'class': re.compile(r'\bl\b')})
+        #title_a = result.find('h3').find('a')
         title_a = result.find('a')
         if not title_a:
             self._maybe_raise(ParseError, "Title tag in Google search result was not found", result)
@@ -259,6 +266,10 @@ class GoogleSearch(object):
         return title, url
 
     def _extract_description(self, result):
+        """Seems this is enough"""
+        desc = result.find('div', {'class': 's'}).find('span', {'class': 'st'})
+        return desc
+
         desc_div = result.find('div', {'class': re.compile(r'\bs\b')})
         if not desc_div:
             self._maybe_raise(ParseError, "Description tag in Google search result was not found", result)

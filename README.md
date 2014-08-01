@@ -1,11 +1,18 @@
-This is a Google library called 'xgoogle'. Current version is 1.3.
+Python wrapper to Google Search service.
 
-It's written by Peteris Krumins (peter@catonmat.net).
+Provide a wrapper for the following services:
+* Google Search
+* Google Translate
+
+Forked from [xgoogle](https://github.com/pkrumins/xgoogle)
+It was written by Peteris Krumins <peter@catonmat.net>.
 His blog is at http://www.catonmat.net  --  good coders code, great reuse.
 
-The code is licensed under MIT license.
-
---------------------------------------------------------------------------
+Contributors:
+* Holger Berndt
+* Juanjo Conti
+* Steve Steiner
+* azappella
 
 At the moment it contains:
  * Google Search module xgoogle/search.py.
@@ -16,11 +23,29 @@ At the moment it contains:
 
  * Google Sets module xgoogle/googlesets.py
    http://www.catonmat.net/blog/python-library-for-google-sets/
+   Note: Google Sets has been shut down since Sep 5, 2011
 
  * Google Translate module xgoogle/translate.py
    http://www.catonmat.net/blog/python-library-for-google-translate/
 
---------------------------------------------------------------------------
+Disclaimer
+==========
+
+It may voilate the Google [Terms of Service](https://www.google.com/intl/en/policies/terms/)
+
+> Don't misuse our Services.
+> For example, don't interfere with our Services or
+> try to access them using a method
+> other than the interface and the instructions that we provide.
+
+It is provided for personal study and research.
+
+Usage
+=====
+
+Google Search
+-------------
+
 
 Here is an example usage of Google Search module:
 
@@ -30,7 +55,7 @@ Here is an example usage of Google Search module:
     >>> results = gs.get_results()
     >>> for res in results:
     ...   print res.title.encode('utf8')
-    ... 
+    ...
 
     output:
 
@@ -49,7 +74,10 @@ The GoogleSearch object has several public methods and properties:
 A SearchResult object has three attributes -- "title", "desc", and "url".
 They are Unicode strings, so do a proper encoding before outputting them.
 
---------------------------------------------------------------------------
+Google Sponsored Links Search module
+------------------------------------
+
+Note: Sponsored Links Search has been changed significantly, so the following example could not work anymore.
 
 Here is an example usage of Google Sponsored Links Search module:
 
@@ -87,7 +115,7 @@ Here is an example usage of Google Sets module:
     >>> print len(results)
     >>> for r in results:
     ...   print r.encode('utf8')
-    ... 
+    ...
 
     output:
 
@@ -125,6 +153,8 @@ Here is an example showing differences between SMALL_SET and LARGE_SET:
 
 --------------------------------------------------------------------------
 
+Google Translate
+----------------
 Here is an example usage of Google Translate module:
 
     >>> from xgoogle.translate import Translator
@@ -146,13 +176,13 @@ Make sure to wrap your code in try/except block to catch it:
 
     >>> from xgoogle.translate import Translator, TranslationError
     >>>
-    >>> try: 
+    >>> try:
     >>>   translate = Translator().translate
     >>>   print translate("")
     >>> except TranslationError, e:
     >>>   print e
 
-    Failed translating: invalid text 
+    Failed translating: invalid text
 
 
 The Google Translate module also provides "LanguageDetector" class that can be used
@@ -176,24 +206,8 @@ Here is an example usage of LanguageDetector:
 The "DetectionError" may get raised if the detection failed.
 
 
---------------------------------------------------------------------------
+License
+=======
+Licensed under MIT license.
 
-
-Version history:
-
-v1.0:  * initial release, xgoogle library contains just the Google Search.
-v1.1:  * added Google Sponsored Links Search.
-       * fixed a bug in browser.py that might have thrown an unexpected exception.
-v1.2:  * added Google Sets module
-v1.3:  * added Google Translate module
-       * fixed a bug in browser.py when KeyboardInterrupt did not get propagated.
-
---------------------------------------------------------------------------
-
-That's it. Have fun! :)
-
-
-Sincerely,
-Peteris Krumins
-http://www.catonmat.net
 
