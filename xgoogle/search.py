@@ -1,10 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf8 -*-
 #
-# Peteris Krumins (peter@catonmat.net)
-# http://www.catonmat.net  --  good coders code, great reuse
-# Updated by Nikola Milosevic (nikola.milosevic@inspiratron.org
-# http://www.inspiratron.org
+# Peteris Krumins (peter@catonmat.net) [http://www.catonmat.net]
+# Updated by Nikola Milosevic (nikola.milosevic@inspiratron.org) [http://www.inspiratron.org]
 #
 # http://www.catonmat.net/blog/python-library-for-google-search/
 #
@@ -13,8 +11,8 @@
 
 import re
 import urllib
-from htmlentitydefs import name2codepoint
-from BeautifulSoup import BeautifulSoup
+import html.entities
+from bs4 import BeautifulSoup
 import nltk
 
 from browser import Browser, BrowserError
@@ -171,7 +169,7 @@ class GoogleSearch(object):
             try:
                 num = float(interval)
             except ValueError:
-                raise SearchError, "Wrong parameter to first_indexed_in_previous: %s" % (str(interval))
+                raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
 
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
@@ -237,7 +235,7 @@ class GoogleSearch(object):
             else:
                 url = GoogleSearch.NEXT_PAGE_1
 
-        safe_url = [url % { 'query': urllib.quote_plus(self.query),
+        safe_url = [url % { 'query': urllib.parse.quote_plus(self.query),
                            'start': self._page * self._results_per_page,
                            'num': self._results_per_page,
                            'tld' : self._tld,
@@ -254,10 +252,10 @@ class GoogleSearch(object):
 
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise SearchError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError as e:
+            raise SearchError("Failed getting %s: %s" % (e.url, e.error))
 
-        return BeautifulSoup(page)
+        return BeautifulSoup(page, "html.parser")
 
     def _extract_info(self, soup):
         """Extract total results
@@ -309,15 +307,15 @@ class GoogleSearch(object):
         url = title_a['href']
         match = re.match(r'/url\?q=((http|ftp|https)[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         match = re.match(r'/interstitial\?url=((http|ftp|https)[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         return title, url
 
     def _extract_description(self, result):
         """Seems this is enough"""
-        desc = result.find('div', {'class': 's'}).find('span', {'class': 'st'})
+        desc = result.find('div', {'class': 'st'})
         return desc
 
         desc_div = result.find('span', 'st')
@@ -439,7 +437,7 @@ class GoogleVideoSearch(object):
             try:
                 num = float(interval)
             except ValueError:
-                raise SearchError, "Wrong parameter to first_indexed_in_previous: %s" % (str(interval))
+                raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
     
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
@@ -503,7 +501,7 @@ class GoogleVideoSearch(object):
             else:
                 url = GoogleVideoSearch.NEXT_PAGE_1
 
-        safe_url = [url % { 'query': urllib.quote_plus(self.query),
+        safe_url = [url % { 'query': urllib.parse.quote_plus(self.query),
                            'start': self._page * self._results_per_page,
                            'num': self._results_per_page,
                            'tld' : self._tld,
@@ -520,8 +518,8 @@ class GoogleVideoSearch(object):
         
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise SearchError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError as e:
+            raise SearchError("Failed getting %s: %s" % (e.url, e.error))
 
         return BeautifulSoup(page)
 
@@ -588,7 +586,7 @@ class GoogleVideoSearch(object):
         url = title_a['href']
         match = re.match(r'/url\?q=(http[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         return title, url
 
     def _extract_description(self, result):
@@ -707,7 +705,7 @@ class GoogleImageSearch(object):
             try:
                 num = float(interval)
             except ValueError:
-                raise SearchError, "Wrong parameter to first_indexed_in_previous: %s" % (str(interval))
+                raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
     
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
@@ -771,7 +769,7 @@ class GoogleImageSearch(object):
             else:
                 url = GoogleImageSearch.NEXT_PAGE_1
 
-        safe_url = [url % { 'query': urllib.quote_plus(self.query),
+        safe_url = [url % { 'query': urllib.parse.quote_plus(self.query),
                            'start': self._page * self._results_per_page,
                            'num': self._results_per_page,
                            'tld' : self._tld,
@@ -788,8 +786,8 @@ class GoogleImageSearch(object):
         
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise SearchError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError as e:
+            raise SearchError("Failed getting %s: %s" % (e.url, e.error))
 
         return BeautifulSoup(page)
 
@@ -842,7 +840,7 @@ class GoogleImageSearch(object):
         url = title_a['href']
         match = re.match(r'/url\?q=(http[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         return title, url
 
     def _extract_description(self, result):
@@ -964,7 +962,7 @@ class GoogleFaceImageSearch(object):
             try:
                 num = float(interval)
             except ValueError:
-                raise SearchError, "Wrong parameter to first_indexed_in_previous: %s" % (str(interval))
+                raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
     
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
@@ -1028,7 +1026,7 @@ class GoogleFaceImageSearch(object):
             else:
                 url = GoogleFaceImageSearch.NEXT_PAGE_1
 
-        safe_url = [url % { 'query': urllib.quote_plus(self.query),
+        safe_url = [url % { 'query': urllib.parse.quote_plus(self.query),
                            'start': self._page * self._results_per_page,
                            'num': self._results_per_page,
                            'tld' : self._tld,
@@ -1045,8 +1043,8 @@ class GoogleFaceImageSearch(object):
         
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise SearchError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError as e:
+            raise SearchError("Failed getting %s: %s" % (e.url, e.error))
         return BeautifulSoup(page)
 
     def _extract_info(self, soup):
@@ -1068,8 +1066,8 @@ class GoogleFaceImageSearch(object):
         matches = re.search(r'(\d+)', txt, re.U)
 
         if not matches:
-            print self._re_search_strings[0]
-            print txt
+            print(self._re_search_strings[0])
+            print(txt)
             return empty_info
         return {'from': 0, 'to': 0, 'total': int(matches.group(1))}
 
@@ -1104,10 +1102,10 @@ class GoogleFaceImageSearch(object):
         url = title_a['href']
         match = re.match(r'/url\?q=((http|ftp|https)[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         match = re.match(r'/interstitial\?url=((http|ftp|https)[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         return title, url
 
     def _extract_description(self, result):
@@ -1208,7 +1206,7 @@ class BlogSearch(GoogleSearch):
         url = title_a['href']
         match = re.match(r'/url\?q=(http[^&]+)&', url)
         if match:
-            url = urllib.unquote(match.group(1))
+            url = urllib.parse.unquote(match.group(1))
         return title, url
 
     def _extract_description(self, result):
