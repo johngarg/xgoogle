@@ -228,6 +228,7 @@ Requires NLTK for Google video search, for install instruction see: http://www.n
 
 Contributors:
 =============
+* kenorb (Python 3.x version, maintainance and bug fixes)
 * Holger Berndt ('lang', 'tld' args, 'filetype' search, 'last_search_url' property, 'date indexed' search)
 * Juanjo Conti (Google Blog Search class)
 * Steve Steiner (setup.py)
@@ -238,5 +239,3 @@ Contributors:
 License
 =======
 Licensed under MIT license.
-
-
