@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*- 
+# -*- coding: utf8 -*-
 #
 # Peteris Krumins (peter@catonmat.net)
 # http://www.catonmat.net  --  good coders code, great reuse
@@ -113,7 +113,7 @@ class Browser(object):
             # Check if we've reached the captcha
             if e.code == 503:
                 print("Error: Captcha page has been reached, exiting...")
-                sys.exit()
+                sys.exit(1)
             raise BrowserError(url, str(e))
         except (urllib.error.URLError) as e:
             raise BrowserError(url, str(e))
@@ -128,4 +128,7 @@ class Browser(object):
 
     def set_random_user_agent(self):
         self.headers['User-Agent'] = random.choice(BROWSERS)
+        return self.headers['User-Agent']
+
+    def get_user_agent(self):
         return self.headers['User-Agent']

@@ -15,7 +15,7 @@ import html.entities
 from bs4 import BeautifulSoup
 import nltk
 
-from browser import Browser, BrowserError
+from xgoogle.browser import Browser, BrowserError
 
 class SearchError(Exception):
     """
@@ -40,8 +40,8 @@ class ParseError(SearchError):
 
     def html(self):
         return self.tag.prettify()
-    
-    
+
+
 #     videoname =  nltk.clean_html(str(h3[0]))
 #         video_url = result.findAll('cite')
 #         date_and_author = result.find('div',{'class':'f slp'})
@@ -80,7 +80,7 @@ class SearchResult:
         return self.url
 
     def setURL(self, url):
-        self.url = url 
+        self.url = url
 
     def getTitle(self):
         return self.title
@@ -364,7 +364,7 @@ class GoogleSearch(object):
 
         s =    re.sub(r'&#(\d+);',  ascii_replacer, str, re.U)
         return re.sub(r'&([^;]+);', entity_replacer, s, re.U)
-    
+
 class GoogleVideoSearch(object):
     SEARCH_URL_0 = "http://www.google.%(tld)s/search?tbm=vid&hl=%(lang)s&q=%(query)s"
     NEXT_PAGE_0 = "http://www.google.%(tld)s/search?tbm=vid&hl=%(lang)s&q=%(query)s&start=%(start)d"
@@ -385,7 +385,7 @@ class GoogleVideoSearch(object):
         self._last_from = 0
         self._lang = lang
         self._tld = tld
-        
+
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
@@ -439,17 +439,17 @@ class GoogleVideoSearch(object):
             except ValueError:
                 raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
-    
+
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
-    
+
     def _get_filetype(self):
         return self._filetype
 
     def _set_filetype(self, filetype):
         self._filetype = filetype
-    
+
     filetype = property(_get_filetype, _set_filetype, doc="file extension to search for")
-    
+
     def _get_results_per_page(self):
         return self._results_per_page
 
@@ -506,16 +506,16 @@ class GoogleVideoSearch(object):
                            'num': self._results_per_page,
                            'tld' : self._tld,
                            'lang' : self._lang }]
-        
+
         # possibly extend url with optional properties
         if self._first_indexed_in_previous:
             safe_url.extend(["&as_qdr=", self._first_indexed_in_previous])
         if self._filetype:
             safe_url.extend(["&as_filetype=", self._filetype])
-        
+
         safe_url = "".join(safe_url)
         self._last_search_url = safe_url
-        
+
         try:
             page = self.browser.get_page(safe_url)
         except BrowserError as e:
@@ -550,7 +550,7 @@ class GoogleVideoSearch(object):
         return ret_res
 
     def _extract_result(self, result):
-        
+
         h3=result.findAll('h3')
         name = ''
         for lonuri in h3:
@@ -653,7 +653,7 @@ class GoogleImageSearch(object):
         self._last_from = 0
         self._lang = lang
         self._tld = tld
-        
+
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
@@ -707,17 +707,17 @@ class GoogleImageSearch(object):
             except ValueError:
                 raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
-    
+
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
-    
+
     def _get_filetype(self):
         return self._filetype
 
     def _set_filetype(self, filetype):
         self._filetype = filetype
-    
+
     filetype = property(_get_filetype, _set_filetype, doc="file extension to search for")
-    
+
     def _get_results_per_page(self):
         return self._results_per_page
 
@@ -774,16 +774,16 @@ class GoogleImageSearch(object):
                            'num': self._results_per_page,
                            'tld' : self._tld,
                            'lang' : self._lang }]
-        
+
         # possibly extend url with optional properties
         if self._first_indexed_in_previous:
             safe_url.extend(["&as_qdr=", self._first_indexed_in_previous])
         if self._filetype:
             safe_url.extend(["&as_filetype=", self._filetype])
-        
+
         safe_url = "".join(safe_url)
         self._last_search_url = safe_url
-        
+
         try:
             page = self.browser.get_page(safe_url)
         except BrowserError as e:
@@ -886,7 +886,7 @@ class GoogleImageSearch(object):
 
         s =    re.sub(r'&#(\d+);',  ascii_replacer, str, re.U)
         return re.sub(r'&([^;]+);', entity_replacer, s, re.U)
-    
+
 
 class GoogleFaceImageSearch(object):
     SEARCH_URL_0 = "http://www.google.%(tld)s/search?tbm=isch&tbs=itp:face&hl=%(lang)s&q=%(query)s"
@@ -908,7 +908,7 @@ class GoogleFaceImageSearch(object):
         self._last_from = 0
         self._lang = lang
         self._tld = tld
-        
+
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
@@ -964,17 +964,17 @@ class GoogleFaceImageSearch(object):
             except ValueError:
                 raise SearchError("Wrong parameter to first_indexed_in_previous: %s" % (str(interval)))
             self._first_indexed_in_previous = 'm' + str(interval)
-    
+
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous, doc="possible values: day, week, month, year, or a float value of months")
-    
+
     def _get_filetype(self):
         return self._filetype
 
     def _set_filetype(self, filetype):
         self._filetype = filetype
-    
+
     filetype = property(_get_filetype, _set_filetype, doc="file extension to search for")
-    
+
     def _get_results_per_page(self):
         return self._results_per_page
 
@@ -1031,16 +1031,16 @@ class GoogleFaceImageSearch(object):
                            'num': self._results_per_page,
                            'tld' : self._tld,
                            'lang' : self._lang }]
-        
+
         # possibly extend url with optional properties
         if self._first_indexed_in_previous:
             safe_url.extend(["&as_qdr=", self._first_indexed_in_previous])
         if self._filetype:
             safe_url.extend(["&as_filetype=", self._filetype])
-        
+
         safe_url = "".join(safe_url)
         self._last_search_url = safe_url
-        
+
         try:
             page = self.browser.get_page(safe_url)
         except BrowserError as e:

@@ -31,7 +31,7 @@ class SLParseError(Exception):
     self.tag attribute contains BeautifulSoup object with the most relevant tag that failed to parse
     Thrown only in debug mode
     """
-     
+
     def __init__(self, msg, tag):
         self.msg = msg
         self.tag = tag
@@ -110,7 +110,7 @@ class SponsoredLinks(object):
         if sleep_function is GET_ALL_SLEEP_FUNCTION:
             sleep_function = self._get_all_results_sleep_fn
         if sleep_function is None:
-            sleep_function = lambda: None 
+            sleep_function = lambda: None
         ret_results = []
         while True:
             res = self.get_results()
@@ -153,8 +153,8 @@ class SponsoredLinks(object):
 
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise SLError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError(e):
+            raise SLError("Failed getting %s: %s" % (e.url, e.error))
 
         return BeautifulSoup(page)
 

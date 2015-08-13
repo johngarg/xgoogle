@@ -5,7 +5,7 @@ __version__ = '1.4'
 
 import os
 def _read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return open(os.path.join(os.path.dirname(__file__), fname), encoding='utf-8').read()
 
 setup(
     name='xgoogle',
@@ -26,6 +26,7 @@ setup(
     zip_safe=False,
     install_requires=[
        # -*- Extra requirements: -*-
-      'nltk==2.0.4'
+      'beautifulsoup4>=4.0',
+      'nltk>=3.0'
     ],
 )

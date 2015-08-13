@@ -54,9 +54,9 @@ class RealtimeSearch(object):
         self._lang = lang
         self._tld = tld
         self._interval = interval
-        
+
         self.older = older
-        
+
         if random_agent:
             self.browser.set_random_user_agent()
 
@@ -73,31 +73,31 @@ class RealtimeSearch(object):
     page = property(_get_page, _set_page)
 
     def _set_older(self, older):
-        self._older = older 
-        
+        self._older = older
+
     def _get_older(self):
         return self._older
-    
+
     older = property(_get_older, _set_older)
 
     def get_results(self):
         """ Gets a page of results """
         if self.eor:
             return []
-        
+
         page = self._get_results_page()
 
         # Check captcha
         if self._check_captcha(page):
-            raise CaptchaError, "Found Captcha"
+            raise CaptchaError("Found Captcha")
 
         results = self._extract_results(page)
         self._page += 1
-        
+
         # Get older link
         self.older = self._extract_older_link(page)
         if not self.older:
-            raise RealtimeSearchError, "Could not compute older results' link"
+            raise RealtimeSearchError("Could not compute older results' link")
 
         return results
 
@@ -116,15 +116,15 @@ class RealtimeSearch(object):
                                 'tld': self._tld,
                                 'lang' : self._lang }]
             safe_url = "".join(safe_url)
-            self.older = safe_url            
+            self.older = safe_url
         else:
             safe_url = self.older
 
         self._last_search_url = safe_url
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise RealtimeSearchError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError(e):
+            raise RealtimeSearchError("Failed getting %s: %s" % (e.url, e.error))
         return BeautifulSoup(page)
 
     def _extract_results(self, soup):
@@ -187,50 +187,50 @@ class RealtimeSearch(object):
         return long(id[0])
 
     def _extract_older_link(self, soup):
-        url = RealtimeSearch.BASE_URL 
+        url = RealtimeSearch.BASE_URL
         safe_url = url % {'tld':self._tld}
 
         # Try to get the older link
         links = soup.find('div', {'class':'s'})
         if links:
-            links = links.findAll('a')            
+            links = links.findAll('a')
             if links and links[0]['href']:
                 return ''.join([safe_url, links[0]['href']])
-                
+
         # Change the interval to get older tweets
         return self._change_interval(self.older)
-    
+
     def _change_interval(self, current_url):
         regex = 'mbl_hs:(?P<hs>[\d]*),mbl_he:(?P<he>[\d]*),mbl_rs:(?P<rs>[\d]*),mbl_re:(?P<re>[\d]*),'
         matchobj = re.search(regex, current_url)
-        
+
         if not matchobj:
             return None
 
         int_hs, int_he, int_rs, int_re = matchobj.group('hs', 'he', 'rs', 're')
-        
+
         # Set new interval
 #        int_re_n = int_rs
-    
+
         int_re_n = str(int(int_re) - self._interval)
         int_rs_n = str(int(int_rs) - self._interval)
-        
+
         int_hs_n = str(int(int_hs) - self._interval)
         int_he_n = str(int(int_he) - self._interval)
-        
+
 #        if int_rs_n < int_hs:
 #            int_hs_n = str(int(int_hs) - RealtimeSearch.DAY)
 #            int_he_n = str(int(int_he) - RealtimeSearch.DAY)
-        
+
         # Replace the parameters in the url
         current_url = re.sub(int_hs, int_hs_n, current_url)
         current_url = re.sub(int_he, int_he_n, current_url)
         current_url = re.sub(int_rs, int_rs_n, current_url)
         current_url = re.sub(int_re, int_re_n, current_url)
-        
+
         return current_url
-        
-    
+
+
     def _html_unescape(self, str):
         def entity_replacer(m):
             entity = m.group(1)

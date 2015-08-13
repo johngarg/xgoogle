@@ -27,7 +27,7 @@ class GSParseError(Exception):
     self.tag attribute contains BeautifulSoup object with the most relevant tag that failed to parse
     Thrown only in debug mode
     """
-     
+
     def __init__(self, msg, tag):
         self.msg = msg
         self.tag = tag
@@ -77,8 +77,8 @@ class GoogleSets(object):
 
         try:
             page = self.browser.get_page(safe_url)
-        except BrowserError, e:
-            raise GSError, "Failed getting %s: %s" % (e.url, e.error)
+        except BrowserError(e):
+            raise GSError("Failed getting %s: %s" % (e.url, e.error))
 
         return BeautifulSoup(page)
 
