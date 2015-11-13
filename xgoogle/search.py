@@ -121,7 +121,7 @@ class GoogleSearch(object):
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
-            self._re_search_strings = ("Ergebnisse", "von", u"ungefähr")
+            self._re_search_strings = ("Ergebnisse", "von", "ungefähr")
         elif lang == "es":
             self._re_search_strings = ("Resultados", "de", "aproximadamente")
         # add more localised versions here
@@ -389,7 +389,7 @@ class GoogleVideoSearch(object):
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
-            self._re_search_strings = ("Ergebnisse", "von", u"ungefähr")
+            self._re_search_strings = ("Ergebnisse", "von", "ungefähr")
         elif lang == "es":
             self._re_search_strings = ("Resultados", "de", "aproximadamente")
         # add more localised versions here
@@ -657,7 +657,7 @@ class GoogleImageSearch(object):
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
-            self._re_search_strings = ("Ergebnisse", "von", u"ungefähr")
+            self._re_search_strings = ("Ergebnisse", "von", "ungefähr")
         elif lang == "es":
             self._re_search_strings = ("Resultados", "de", "aproximadamente")
         # add more localised versions here
@@ -912,7 +912,7 @@ class GoogleFaceImageSearch(object):
         if re_search_strings:
             self._re_search_strings = re_search_strings
         elif lang == "de":
-            self._re_search_strings = ("Ergebnisse", "von", u"ungefähr")
+            self._re_search_strings = ("Ergebnisse", "von", "ungefähr")
         elif lang == "es":
             self._re_search_strings = ("Resultados", "de", "aproximadamente")
         elif lang == "fr":
