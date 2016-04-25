@@ -9,6 +9,7 @@
 # Code is licensed under MIT license.
 #
 
+import ssl
 import random
 import socket
 import urllib
@@ -94,6 +95,8 @@ class Browser(object):
 
         self.opener = urllib.request.build_opener(*self.handlers)
         self.opener.addheaders = []
+
+        ssl._create_default_https_context = ssl._create_unverified_context
 
         try:
             conn = self.opener.open("http://www.google.com/ncr")
