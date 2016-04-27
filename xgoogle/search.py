@@ -279,7 +279,7 @@ class GoogleSearch(object):
 
     def _extract_results(self, soup):
         """Extract results from the page"""
-        results = soup.findAll('li','g')
+        results = soup.findAll('div','g')
         ret_res = []
         for result in results:
             eres = self._extract_result(result)
@@ -315,7 +315,7 @@ class GoogleSearch(object):
 
     def _extract_description(self, result):
         """Seems this is enough"""
-        desc = result.find('div', {'class': 'st'})
+        desc = result.find('span', {'class': 'st'})
         return desc
 
         desc_div = result.find('span', 'st')
