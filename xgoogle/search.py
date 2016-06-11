@@ -103,7 +103,7 @@ class GoogleSearch(object):
     SEARCH_URL_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&btnG=Google+Search"
     NEXT_PAGE_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None):
+    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None, repeat=None):
         self.query = query
         self.debug = debug
         self.browser = Browser(debug=debug)
@@ -117,6 +117,7 @@ class GoogleSearch(object):
         self._last_from = 0
         self._lang = lang
         self._tld = tld
+        self.repeat = repeat
 
         if re_search_strings:
             self._re_search_strings = re_search_strings
@@ -246,6 +247,8 @@ class GoogleSearch(object):
             safe_url.extend(["&as_qdr=", self._first_indexed_in_previous])
         if self._filetype:
             safe_url.extend(["&as_filetype=", self._filetype])
+        if self.repeat:
+            safe_url.extend(["&filter=", '0'])
 
         safe_url = "".join(safe_url)
         self._last_search_url = safe_url
