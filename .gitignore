@@ -6,3 +6,7 @@ xgoogle.egg-info
 .project
 .pydevproject
 .settings
+
+# Ignore build files.
+build/
+dist/
