@@ -103,7 +103,7 @@ class GoogleSearch(object):
     SEARCH_URL_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&btnG=Google+Search"
     NEXT_PAGE_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None, repeat=None):
+    def __init__(self, query, random_agent=True, debug=False, lang="en", tld="com", re_search_strings=None, repeat=None):
         self.query = query
         self.debug = debug
         self.browser = Browser(debug=debug)
@@ -294,7 +294,7 @@ class GoogleSearch(object):
         """Extract title,url,desc for a result"""
         title, url = self._extract_title_url(result)
         desc = self._extract_description(result)
-        if not title or not url:
+        if not title and not url:
             return None
         return SearchResult(title, url, desc)
 

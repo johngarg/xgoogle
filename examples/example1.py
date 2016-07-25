@@ -11,9 +11,12 @@ try:
   gs.results_per_page = 50
   results = gs.get_results()
   for res in results:
-    print res.title.encode('utf8')
-    print res.desc.encode('utf8')
-    print res.url.encode('utf8')
+    if res.title is not None:
+        print res.title.encode('utf8')
+    if res.desc is not None:
+        print res.desc.encode('utf8')
+    if res.url is not None:
+        print res.url.encode('utf8')
     print
 except SearchError, e:
   print "Search failed: %s" % e
