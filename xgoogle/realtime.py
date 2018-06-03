@@ -13,8 +13,12 @@ import re
 from datetime import datetime
 import time
 import urllib
-from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
+
+try:
+    from html.entities import name2codepoint
+except ImportError:
+    from htmlentitydefs import name2codepoint
 
 from search import SearchError
 from browser import Browser, BrowserError

@@ -2,7 +2,6 @@
 """
 Simulate:
     google_dl -s http://www.marquette.edu/maqom/ -f pdf ""
-
 """
 from xgoogle.search import GoogleSearch
 

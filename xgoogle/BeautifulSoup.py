@@ -89,9 +89,9 @@ import types
 import re
 import sgmllib
 try:
-  from htmlentitydefs import name2codepoint
+    from html.entities import name2codepoint
 except ImportError:
-  name2codepoint = {}
+    from htmlentitydefs import name2codepoint
 
 #This hack makes Beautiful Soup able to parse XML with namespaces
 sgmllib.tagfind = re.compile('[a-zA-Z][-_.:a-zA-Z0-9]*')
