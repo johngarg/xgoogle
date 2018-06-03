@@ -10,8 +10,6 @@
 
 import re
 import urllib
-import random
-from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
 
 from browser import Browser, BrowserError

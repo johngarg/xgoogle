@@ -11,8 +11,12 @@
 import re
 import urllib
 import random
-from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
+
+try:
+    from html.entities import name2codepoint
+except ImportError:
+    from htmlentitydefs import name2codepoint
 
 from browser import Browser, BrowserError
 
