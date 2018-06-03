@@ -11,9 +11,13 @@
 
 import re
 import urllib
-import html.entities
 from bs4 import BeautifulSoup
 import nltk
+
+try:
+    from html.entities import name2codepoint
+except ImportError:
+    from htmlentitydefs import name2codepoint
 
 from xgoogle.browser import Browser, BrowserError
 
