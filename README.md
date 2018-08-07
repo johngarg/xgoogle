@@ -13,6 +13,21 @@ Forked from [xgoogle](https://github.com/pkrumins/xgoogle)
 It was written by Peteris Krumins <peter@catonmat.net>.
 His blog is at http://www.catonmat.net  --  good coders code, great reuse.
 
+Install
+=======
+
+1. Install requirements by: `pip install -r requirements.txt`.
+
+   <sup>Note: Use `pip3` if required.</sup>
+
+2. Run build by: `python setup.py build`.
+3. Install by: `python setup.py install`.
+
+   <sup>Note: Prefix by `sudo` if required.</sup>
+
+Features
+========
+
 At the moment it contains:
 
  * Google Search module (xgoogle/search.py).
