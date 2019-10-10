@@ -107,10 +107,10 @@ class GoogleSearch(object):
     SEARCH_URL_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&btnG=Google+Search"
     NEXT_PAGE_1 = "http://www.google.%(tld)s/search?hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=True, debug=False, lang="en", tld="com", re_search_strings=None, repeat=None):
+    def __init__(self, query, random_agent=True, debug=False, lang="en", tld="com", re_search_strings=None, repeat=None, timeout=5):
         self.query = query
         self.debug = debug
-        self.browser = Browser(debug=debug)
+        self.browser = Browser(debug=debug, timeout=timeout)
         self.results_info = None
         self.eor = False # end of results
         self._page = 0
@@ -358,14 +358,14 @@ class GoogleSearch(object):
         def entity_replacer(m):
             entity = m.group(1)
             if entity in name2codepoint:
-                return unichr(name2codepoint[entity])
+                return chr(name2codepoint[entity])
             else:
                 return m.group(0)
 
         def ascii_replacer(m):
             cp = int(m.group(1))
             if cp <= 255:
-                return unichr(cp)
+                return chr(cp)
             else:
                 return m.group(0)
 
@@ -378,10 +378,10 @@ class GoogleVideoSearch(object):
     SEARCH_URL_1 = "http://www.google.%(tld)s/search?tbm=vid&hl=%(lang)s&q=%(query)s&num=%(num)d"
     NEXT_PAGE_1 = "http://www.google.%(tld)s/search?tbm=vid&hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None):
+    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None, timeout=5):
         self.query = query
         self.debug = debug
-        self.browser = Browser(debug=debug)
+        self.browser = Browser(debug=debug, timeout=timeout)
         self.results_info = None
         self.eor = False # end of results
         self._page = 0
@@ -626,14 +626,14 @@ class GoogleVideoSearch(object):
         def entity_replacer(m):
             entity = m.group(1)
             if entity in name2codepoint:
-                return unichr(name2codepoint[entity])
+                return chr(name2codepoint[entity])
             else:
                 return m.group(0)
 
         def ascii_replacer(m):
             cp = int(m.group(1))
             if cp <= 255:
-                return unichr(cp)
+                return chr(cp)
             else:
                 return m.group(0)
 
@@ -646,10 +646,10 @@ class GoogleImageSearch(object):
     SEARCH_URL_1 = "http://www.google.%(tld)s/search?tbm=isch&hl=%(lang)s&q=%(query)s&num=%(num)d"
     NEXT_PAGE_1 = "http://www.google.%(tld)s/search?tbm=isch&hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None):
+    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None, timeout=5):
         self.query = query
         self.debug = debug
-        self.browser = Browser(debug=debug)
+        self.browser = Browser(debug=debug, timeout=timeout)
         self.results_info = None
         self.eor = False # end of results
         self._page = 0
@@ -880,14 +880,14 @@ class GoogleImageSearch(object):
         def entity_replacer(m):
             entity = m.group(1)
             if entity in name2codepoint:
-                return unichr(name2codepoint[entity])
+                return chr(name2codepoint[entity])
             else:
                 return m.group(0)
 
         def ascii_replacer(m):
             cp = int(m.group(1))
             if cp <= 255:
-                return unichr(cp)
+                return chr(cp)
             else:
                 return m.group(0)
 
@@ -901,10 +901,10 @@ class GoogleFaceImageSearch(object):
     SEARCH_URL_1 = "http://www.google.%(tld)s/search?tbm=isch&tbs=itp:face&hl=%(lang)s&q=%(query)s&num=%(num)d"
     NEXT_PAGE_1 = "http://www.google.%(tld)s/search?tbm=isch&tbs=itp:face&hl=%(lang)s&q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None):
+    def __init__(self, query, random_agent=False, debug=False, lang="en", tld="com", re_search_strings=None, timeout=5):
         self.query = query
         self.debug = debug
-        self.browser = Browser(debug=debug)
+        self.browser = Browser(debug=debug, timeout=timeout)
         self.results_info = None
         self.eor = False # end of results
         self._page = 0
@@ -1149,14 +1149,14 @@ class GoogleFaceImageSearch(object):
         def entity_replacer(m):
             entity = m.group(1)
             if entity in name2codepoint:
-                return unichr(name2codepoint[entity])
+                return chr(name2codepoint[entity])
             else:
                 return m.group(0)
 
         def ascii_replacer(m):
             cp = int(m.group(1))
             if cp <= 255:
-                return unichr(cp)
+                return chr(cp)
             else:
                 return m.group(0)
 

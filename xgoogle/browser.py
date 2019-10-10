@@ -9,6 +9,7 @@
 # Code is licensed under MIT license.
 #
 
+import sys
 import ssl
 import random
 import socket
@@ -17,6 +18,7 @@ import urllib.request
 import http.client
 import http.cookiejar
 import http.cookies
+
 
 BROWSERS = (
     # Top most popular browsers in my access.log on 2009.02.12
@@ -42,7 +44,7 @@ BROWSERS = (
     'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
 )
 
-TIMEOUT = 5  # socket timeout
+TIMEOUT_SOCKET = 5  # socket timeout
 
 class BrowserError(Exception):
     def __init__(self, url, error):
@@ -52,6 +54,7 @@ class BrowserError(Exception):
 class PoolHTTPConnection(http.client.HTTPConnection):
     def connect(self):
         """Connect to the host and port specified in __init__."""
+        global TIMEOUT_SOCKET
         msg = "getaddrinfo returns an empty list"
         for res in socket.getaddrinfo(self.host, self.port, 0,
                                       socket.SOCK_STREAM):
@@ -60,7 +63,7 @@ class PoolHTTPConnection(http.client.HTTPConnection):
                 self.sock = socket.socket(af, socktype, proto)
                 if self.debuglevel > 0:
                     print("connect: (%s, %s)" % (self.host, self.port))
-                self.sock.settimeout(TIMEOUT)
+                self.sock.settimeout(TIMEOUT_SOCKET)
                 self.sock.connect(sa)
             except socket.error as msg:
                 if self.debuglevel > 0:
@@ -80,7 +83,9 @@ class PoolHTTPHandler(urllib.request.HTTPHandler):
 class Browser(object):
     """Provide a simulated browser object.
     """
-    def __init__(self, user_agent=BROWSERS[0], debug=False, use_pool=False):
+    def __init__(self, timeout, user_agent=BROWSERS[0], debug=False, use_pool=False):
+        global TIMEOUT_SOCKET
+        TIMEOUT_SOCKET = timeout
         self.headers = {
             'User-Agent': user_agent,
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -112,15 +117,15 @@ class Browser(object):
         try:
             response = self.opener.open(request)
             return response.read()
-        except (urllib.error.HTTPError) as e:
+        except urllib.error.HTTPError as e:
             # Check if we've reached the captcha
             if e.code == 503:
                 print("Error: Captcha page has been reached, exiting...")
                 sys.exit(1)
             raise BrowserError(url, str(e))
-        except (urllib.error.URLError) as e:
+        except urllib.error.URLError as e:
             raise BrowserError(url, str(e))
-        except (socket.error, socket.sslerror) as msg:
+        except (socket.error, ssl.SSLError) as msg:
             raise BrowserError(url, msg)
         except socket.timeout as e:
             raise BrowserError(url, "timeout")
