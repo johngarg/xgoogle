@@ -286,7 +286,7 @@ class GoogleSearch(object):
 
     def _extract_results(self, soup):
         """Extract results from the page"""
-        results = soup.findAll('div','g')
+        results = soup.findAll(["div", "g"])
         ret_res = []
         for result in results:
             eres = self._extract_result(result)
